@@ -3,6 +3,7 @@ import { useLoaderData } from "react-router-dom";
 import { addToDb } from "../Utils/FakeDB";
 import ProductCard from "./Cards/ProductCard";
 import { CartContext, ProductContext } from "../App";
+import toast from "react-hot-toast";
 
 const Shop = () => {
   const products = useContext(ProductContext);
@@ -23,6 +24,7 @@ const Shop = () => {
       newCart = [...rest, exists];
     }
 
+    toast.success('Product Added! 🛒');
     setCart(newCart);
     addToDb(product.id);
   };
