@@ -1,8 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useLoaderData } from "react-router-dom";
-import { deleteShoppingCart, getStoredCart, removeFromDb } from "../Utils/FakeDB";
+import {
+  deleteShoppingCart,
+  getStoredCart,
+  removeFromDb,
+} from "../Utils/FakeDB";
 import CartItem from "./Cards/CartItem";
 import { CartContext } from "../App";
+import toast from "react-hot-toast";
 
 const Cart = () => {
   const [cart, setCart] = useContext(CartContext);
@@ -16,15 +21,30 @@ const Cart = () => {
 
   //   remove item from shopping cart
   const handleRemoveItem = (id) => {
-    const remaining = cart.filter(product => product.id !== id);
+    const remaining = cart.filter((product) => product.id !== id);
     setCart(remaining);
     removeFromDb(id);
   };
 
-//   delete shopping cart
-const deleteCartHandler = () => {
-    deleteShoppingCart();
-}
+  //   delete shopping cart
+  const deleteCartHandler = () => {
+    if (cart.length > 0) {
+      setCart([]);
+      deleteShoppingCart();
+      return toast.success("All Items Removed! 👍");
+    }
+    return toast.error("Cart is empty! 🔥");
+  };
+
+  // place order
+  const orderHandler = () => {
+    if (cart.length > 0) {
+      setCart([]);
+      deleteShoppingCart();
+      return toast.success("Order Placed! 👍");
+    }
+    return toast.error("Cart is empty! 🔥");
+  };
 
   return (
     <div className="flex min-h-screen items-start justify-center bg-gray-100 text-gray-900">
@@ -54,13 +74,17 @@ const deleteCartHandler = () => {
 
         <div className="flex justify-end space-x-4">
           {cart.length > 0 ? (
-            <button onClick={deleteCartHandler} className="btn-outlined">Clear Cart</button>
+            <button onClick={deleteCartHandler} className="btn-outlined">
+              Clear Cart
+            </button>
           ) : (
             <Link to="/shop">
               <button className="btn-outlined">Back To Shop</button>
             </Link>
           )}
-          <button className="btn-primary">Place Order</button>
+          <button onClick={orderHandler} className="btn-primary">
+            Place Order
+          </button>
         </div>
       </div>
     </div>
